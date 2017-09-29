@@ -146,7 +146,7 @@ def LinLook_RR(vec,arr):
 #..................................................Hamiltonian Creation
 def Ham_Dense_Creation(LL,NN,Dim,D,Dis_real,BC,Base_Bin,Base_Num,Hop_Bin,LinTab):
 
-	t=1	
+	t=1.
 	# tutto in unita di t!!
 
 	ham = np.zeros((Dim,Dim), dtype=np.float)
