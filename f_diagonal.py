@@ -49,11 +49,11 @@ def ExactDiagonalization(PATH_now,L,D,Tab_CdC):
 	#print HAM
 
 	E,V   = ff.eigval(HAM)	
+	e_tre = int(Dim/3)
+	E_tre = E[e_tre:-e_tre]
+	Dim_tre = Dim-2*e_tre
 
-	#print E
-
-
-	levst = ff.levstat(E,Dim)
+	levst = ff.levstat(E_tre,Dim_tre)
 	m_levst = np.mean(levst)
 	
 	nomefile_lev = str(PATH_now+'levst.dat')
