@@ -235,24 +235,44 @@ def OUTER_creation(L,Dim,A):
 		B[i] = np.outer(A[i],A[i])
 	return B
 
-def Mat_Corr_i(A,B):
-	corr_zero=np.einsum('il,ijk -> ljk', A**2, B)
-	return corr_zero
+def SzSz_con_P(A,B,C):
+	SzSz=np.einsum('il,ijk -> ljk', A**2, B)
+	uga =SzSz-C
+	return uga
 
-def Mat_Corr_Psi0(A,B,C):
+def SzSz_con_P_Psi0(A,B):
+	uga=np.einsum('i,ijk -> jk', A, B)
+	return uga
+
+def SzSz_con_Huse(A):
+	L    = A.shape[0]
+	uga_mat= np.einsum('ijk -> jk', np.absolute(A))
+	uga  = uga_mat/L
+	return uga
+
+def SzSz_con_Huse_t(A):
+	L    = A.shape[0]
+	Aabs = np.absolute(A)
+	Alog = np.log(Aabs)
+	uga_mat  = np.einsum('ijk -> jk', Alog)
+	uga  = uga_mat/L
+	return uga
+
+def Mat_SzSz_DE(A,B,C):
+	#NN -> A V, B Base_Corr, C Proj_Psi0
 	corr_zero=np.einsum('l,il,ijk -> jk',C, A**2, B)
 	return corr_zero
 
-def Mat_CorrConn_Psi0(A,B,C,D):
-	corr_zero=np.einsum('il,ijk -> ljk', A**2, B)	
-	corr_zero_conn = corr_zero-D
-	corr_conn = np.einsum('i,ijk -> jk', C, corr_zero_conn)
-
-	return corr_conn
-
-def Mat_Corr_MiCa(A,B):
-	corr_zero=np.einsum('il,ijk -> jk', B, A**2)
+def Mat_Sz_DE(A,B):
+	#NN -> A Dens B Proj_Psi0
+	corr_zero=np.einsum('i,ij -> j',B, A)
 	return corr_zero
+
+def SzSz_con_DE(A,B,C):
+	#A proiezioni, B SzSz, C Sz
+	Sz2=np.outer(C,C)
+	uga=B-Sz2
+	return uga
 
 
 #..................................................CdiCj

@@ -49,22 +49,22 @@ def ExactDiagonalization(PATH_now,L,D,Tab_CdC):
 	#print HAM
 
 	E,V   = ff.eigval(HAM)	
-	e_tre = int(Dim/3)
-	E_tre = E[e_tre:-e_tre]
-	Dim_tre = Dim-2*e_tre
 
-	levst = ff.levstat(E_tre,Dim_tre)
+	#V[Psi0] proiezioni
+	#V[:,Psi0] autovettori
+	
+	#.............................Level statistic
+	#e_tre = int(Dim/3)
+	#E_tre = E[e_tre:-e_tre]
+	#Dim_tre = Dim-2*e_tre
+
+	levst = ff.levstat(E,Dim)
 	m_levst = np.mean(levst)
 	
 	nomefile_lev = str(PATH_now+'levst.dat')
 	with open(nomefile_lev, 'a') as ee:
 		ee.write('%f' % m_levst+"\n")
 
-
-
-	'''
-	#V[Psi0] proiezioni
-	#V[:,Psi0] autovettori
 
 	#.............................Initial state
 	Psi0		= ff.Psi_0(Dim)
@@ -77,6 +77,7 @@ def ExactDiagonalization(PATH_now,L,D,Tab_CdC):
 	with open(ff.generate_filename(nomefile_ent), 'w') as ee:
 		ee.write('%f' % entropy)
 
+
 	#.............................Densita
 	Base_NumRes = ff.BaseNumRes_creation(Dim,LL,Base_Num)
 	Base_Corr	= ff.OUTER_creation(LL,Dim,Base_NumRes)
@@ -84,24 +85,42 @@ def ExactDiagonalization(PATH_now,L,D,Tab_CdC):
 	Dens		= np.dot(np.transpose(V**2),Base_NumRes)
 	DensDens	= ff.OUTER_creation(LL,Dim,Dens)
 
-	#.............................NN
-	NN			= ff.Mat_Corr_Psi0(V,Base_Corr,Proj_Psi0)
-	NN_Conn	= ff.Mat_CorrConn_Psi0(V,Base_Corr,Proj_Psi0,DensDens)
-	
-	#NN_Conn_tr = ff.Trasl_Mean(NN_Conn)
 
-	nomefile_NN = str('corr_n-')
-	np.savetxt(ff.generate_filename(PATH_now+nomefile_NN), NN_Conn, fmt='%.9f')
+	#.............................SzSz Piero & Huse
+	SzSz_con_P		= ff.SzSz_con_P(V,Base_Corr,DensDens)	
+	SzSz_con_P_Psi0 = ff.SzSz_con_P_Psi0(Proj_Psi0,SzSz_con_P)
 
+	SzSz_con_Huse   = ff.SzSz_con_Huse(SzSz_con_P)
+	SzSz_con_Huse_t = ff.SzSz_con_Huse_t(SzSz_con_P)
+
+	nomef_NN_P	= str('corr_P-')
+
+	np.savetxt(ff.generate_filename(PATH_now+nomef_NN_P), SzSz_con_P_Psi0, fmt='%.9f')
+
+	nomef_NN_H	= str('corr_H-')
+	np.savetxt(ff.generate_filename(PATH_now+nomef_NN_H), SzSz_con_Huse, fmt='%.9f')
+
+	nomef_NN_Ht	= str('corr_H_t-')
+	np.savetxt(ff.generate_filename(PATH_now+nomef_NN_Ht), SzSz_con_Huse_t, fmt='%.9f')
+
+
+	#.............................SzSz DE
+	SzSz_DE			= ff.Mat_SzSz_DE(V,Base_Corr,Proj_Psi0)
+	Sz_DE  			= ff.Mat_Sz_DE(Dens,Proj_Psi0)
+	SzSz_con_DE		= ff.SzSz_con_DE(Proj_Psi0,SzSz_DE,Sz_DE)
+
+	nomef_NN_DE	= str('corr_DE-')
+	np.savetxt(ff.generate_filename(PATH_now+nomef_NN_DE), SzSz_con_DE, fmt='%.9f')
 
 
 	#.............................CiCj
 	CdC    = ff.Mat_CdC_Psi0(Tab_CdC,Proj_Psi0,Dim,LL,V)
-	#	CdC_tr = ff.Trasl_Mean(CdC)
 
 	nomefile_cc = str('corr_c-')
 	np.savetxt(ff.generate_filename(PATH_now+nomefile_cc), CdC, fmt='%.9f')
-	'''
+
+
+
 	return 1
 
 
