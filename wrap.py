@@ -7,9 +7,9 @@ import os
 LOCAL = os.path.abspath('.')
 
 #....................................DISORDINE
-D_i = 10.0
-D_f = 10.0
-D_D = 0.5
+D_i = 1.75
+D_f = 4.0
+D_D = 0.25
 
 D_n = int(1+(D_f-D_i)/D_D)
 
@@ -18,8 +18,8 @@ D_tab = [D_i+j*D_D for j in range(D_n)]
 
 
 #....................................LUNGHEZZA
-L_i = 6
-L_f = 6
+L_i = 18
+L_f = 18
 L_D = 2
 
 L_n = int(1+(L_f-L_i)/L_D)
@@ -49,7 +49,7 @@ if rank == 0:
 
 
 #....................................NN Realiz
-NN_RR = [1] #*30
+NN_RR = [50] #*30
 N_proc = size
 
 n0=0
